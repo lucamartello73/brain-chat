@@ -196,6 +196,66 @@
   }
   .footer-hint a { color: var(--text-muted); text-decoration: none; }
 
+  /* Login overlay */
+  .login-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+    width: 340px;
+    text-align: center;
+  }
+  .login-box .icon { font-size: 40px; margin-bottom: 16px; }
+  .login-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+  .login-box input {
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  .login-box input:focus { border-color: var(--accent); }
+  .login-box input::placeholder { color: var(--text-muted); letter-spacing: normal; }
+  .login-box button {
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--radius);
+    color: #fff;
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .login-box button:hover { opacity: 0.9; }
+  .login-error {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 8px;
+    display: none;
+  }
+  .login-overlay.hidden { display: none; }
+
   /* Quick actions */
   .quick-actions {
     display: flex;
@@ -228,6 +288,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="icon">🧠</div>
+    <h2>COMPANION BRAIN</h2>
+    <p>Inserisci il token di accesso</p>
+    <input type="password" id="tokenInput" placeholder="Token" autocomplete="off">
+    <button id="loginBtn">Accedi</button>
+    <div class="login-error" id="loginError">Token non valido</div>
+  </div>
+</div>
 
 <div class="header">
   <div class="header-icon">🧠</div>
@@ -388,10 +459,124 @@ function setStatus(online) {
   statusText.textContent = online ? 'Online' : 'Offline';
 }
 
+// Auth
+const loginOverlay = document.getElementById('loginOverlay');
+const tokenInput = document.getElementById('tokenInput');
+const loginBtn = document.getElementById('loginBtn');
+const loginError = document.getElementById('loginError');
+let authToken = localStorage.getItem('brain_token') || '';
+
+function checkAuth() {
+  if (authToken) {
+    loginOverlay.classList.add('hidden');
+    inputEl.focus();
+  } else {
+    loginOverlay.classList.remove('hidden');
+    tokenInput.focus();
+  }
+}
+
+async function tryLogin() {
+  const token = tokenInput.value.trim();
+  if (!token) return;
+  try {
+    const res = await fetch('/api/health', { headers: { 'x-auth-token': token } });
+    // Health doesn't require auth, so test with a real chat call
+    const chatRes = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+      body: JSON.stringify({ message: 'ping', sessionId: 'auth_test' })
+    });
+    if (chatRes.ok) {
+      authToken = token;
+      localStorage.setItem('brain_token', token);
+      loginOverlay.classList.add('hidden');
+      loginError.style.display = 'none';
+      setStatus(true);
+      inputEl.focus();
+    } else {
+      loginError.style.display = 'block';
+    }
+  } catch (e) {
+    loginError.style.display = 'block';
+  }
+}
+
+loginBtn.addEventListener('click', tryLogin);
+tokenInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+
+// Override fetch in sendMessage to include token
+const originalSendMessage = sendMessage;
+async function sendMessageWithAuth() {
+  const text = inputEl.value.trim();
+  if (!text || isLoading) return;
+
+  isLoading = true;
+  sendBtn.disabled = true;
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  quickActions.style.display = 'none';
+
+  addMessage(text, 'user');
+  showTyping();
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-auth-token': authToken },
+      body: JSON.stringify({ message: text, sessionId: SESSION_ID })
+    });
+
+    hideTyping();
+
+    if (res.status === 401) {
+      authToken = '';
+      localStorage.removeItem('brain_token');
+      addMessage('Sessione scaduta. Ricarica la pagina.', 'system');
+      checkAuth();
+    } else if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      addMessage('Errore: ' + (err.error || res.statusText), 'system');
+      setStatus(false);
+    } else {
+      const data = await res.json();
+      addMessage(data.output, 'brain');
+      setStatus(true);
+    }
+  } catch (err) {
+    hideTyping();
+    addMessage('Connessione persa: ' + err.message, 'system');
+    setStatus(false);
+  }
+
+  isLoading = false;
+  sendBtn.disabled = false;
+  inputEl.focus();
+}
+
+// Replace handlers
+sendBtn.removeEventListener('click', sendMessage);
+sendBtn.addEventListener('click', sendMessageWithAuth);
+inputEl.removeEventListener('keydown', inputEl._keyHandler);
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessageWithAuth();
+  }
+});
+quickActions.removeEventListener('click', quickActions._clickHandler);
+quickActions.addEventListener('click', (e) => {
+  const btn = e.target.closest('.quick-btn');
+  if (btn && !isLoading) {
+    inputEl.value = btn.dataset.msg;
+    sendMessageWithAuth();
+  }
+});
+
 // Health check on load
 fetch('/api/health').then(r => r.ok ? setStatus(true) : setStatus(false)).catch(() => setStatus(false));
 
-inputEl.focus();
+checkAuth();
 </script>
 </body>
 </html>
