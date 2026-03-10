@@ -21,9 +21,7 @@
     --radius: 12px;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: var(--font);
     background: var(--bg);
@@ -34,178 +32,14 @@
     overflow: hidden;
   }
 
-  /* Header */
-  .header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface);
-    flex-shrink: 0;
-  }
-  .header-icon {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent), #a855f7);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-  .header-info h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
-  .header-info .status {
-    font-size: 12px;
-    color: var(--text-muted);
-    display: flex; align-items: center; gap: 6px;
-  }
-  .status-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-  .status-dot.offline { background: var(--red); animation: none; }
-
-  /* Messages area */
-  .messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    scroll-behavior: smooth;
-  }
-  .messages::-webkit-scrollbar { width: 4px; }
-  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-  .msg {
-    max-width: 85%;
-    padding: 12px 16px;
-    border-radius: var(--radius);
-    font-size: 14px;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-word;
-    animation: fadeIn 0.25s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-  .msg.user {
-    align-self: flex-end;
-    background: var(--user-bg);
-    border: 1px solid var(--border);
-    border-bottom-right-radius: 4px;
-  }
-  .msg.brain {
-    align-self: flex-start;
-    background: var(--brain-bg);
-    border: 1px solid var(--border);
-    border-bottom-left-radius: 4px;
-  }
-  .msg.brain .label {
-    font-size: 11px;
-    color: var(--accent);
-    font-weight: 600;
-    margin-bottom: 4px;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .msg.system {
-    align-self: center;
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 12px;
-    text-align: center;
-    padding: 8px;
-  }
-
-  /* Typing indicator */
-  .typing { display: flex; gap: 5px; padding: 12px 16px; }
-  .typing span {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--text-muted);
-    animation: bounce 1.4s infinite;
-  }
-  .typing span:nth-child(2) { animation-delay: 0.2s; }
-  .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce {
-    0%, 60%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-8px); }
-  }
-
-  /* Markdown-like formatting in messages */
-  .msg.brain strong { color: #fff; font-weight: 600; }
-
-  /* Input area */
-  .input-area {
-    padding: 16px 20px;
-    border-top: 1px solid var(--border);
-    background: var(--surface);
-    flex-shrink: 0;
-  }
-  .input-row {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-  }
-  .input-row textarea {
-    flex: 1;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    padding: 12px 16px;
-    resize: none;
-    outline: none;
-    min-height: 44px;
-    max-height: 140px;
-    transition: border-color 0.2s;
-    line-height: 1.5;
-  }
-  .input-row textarea:focus { border-color: var(--accent); }
-  .input-row textarea::placeholder { color: var(--text-muted); }
-
-  .send-btn {
-    width: 44px; height: 44px;
-    border-radius: var(--radius);
-    background: var(--accent);
-    border: none;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: opacity 0.2s, transform 0.1s;
-  }
-  .send-btn:hover { opacity: 0.9; }
-  .send-btn:active { transform: scale(0.95); }
-  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  .send-btn svg { width: 20px; height: 20px; fill: #fff; }
-
-  .footer-hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 8px;
-  }
-  .footer-hint a { color: var(--text-muted); text-decoration: none; }
-
   /* Login overlay */
   .login-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: var(--bg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     z-index: 100;
   }
+  .login-overlay.hidden { display: none; }
   .login-box {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -218,61 +52,99 @@
   .login-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
   .login-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
   .login-box input {
-    width: 100%;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-family: var(--font);
-    font-size: 14px;
-    padding: 12px 16px;
-    outline: none;
-    margin-bottom: 12px;
-    transition: border-color 0.2s;
-    text-align: center;
-    letter-spacing: 0.05em;
+    width: 100%; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    color: var(--text); font-family: var(--font); font-size: 14px;
+    padding: 12px 16px; outline: none; margin-bottom: 12px;
+    transition: border-color 0.2s; text-align: center; letter-spacing: 0.05em;
   }
   .login-box input:focus { border-color: var(--accent); }
   .login-box input::placeholder { color: var(--text-muted); letter-spacing: normal; }
   .login-box button {
-    width: 100%;
-    background: var(--accent);
-    border: none;
-    border-radius: var(--radius);
-    color: #fff;
-    font-family: var(--font);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 12px;
-    cursor: pointer;
+    width: 100%; background: var(--accent); border: none;
+    border-radius: var(--radius); color: #fff; font-family: var(--font);
+    font-size: 14px; font-weight: 500; padding: 12px; cursor: pointer;
     transition: opacity 0.2s;
   }
   .login-box button:hover { opacity: 0.9; }
-  .login-error {
-    color: var(--red);
-    font-size: 12px;
-    margin-top: 8px;
-    display: none;
+  .login-error { color: var(--red); font-size: 12px; margin-top: 8px; display: none; }
+
+  /* Header */
+  .header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    background: var(--surface); flex-shrink: 0;
   }
-  .login-overlay.hidden { display: none; }
+  .header-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .header-info h1 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+  .header-info .status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .status-dot.offline { background: var(--red); animation: none; }
+
+  /* Messages */
+  .messages {
+    flex: 1; overflow-y: auto; padding: 20px;
+    display: flex; flex-direction: column; gap: 16px;
+    scroll-behavior: smooth;
+  }
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .msg {
+    max-width: 85%; padding: 12px 16px; border-radius: var(--radius);
+    font-size: 14px; line-height: 1.6; white-space: pre-wrap;
+    word-break: break-word; animation: fadeIn 0.25s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .msg.user { align-self: flex-end; background: var(--user-bg); border: 1px solid var(--border); border-bottom-right-radius: 4px; }
+  .msg.brain { align-self: flex-start; background: var(--brain-bg); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
+  .msg.brain .label { font-size: 11px; color: var(--accent); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .msg.brain strong { color: #fff; font-weight: 600; }
+  .msg.system { align-self: center; background: transparent; color: var(--text-muted); font-size: 12px; text-align: center; padding: 8px; }
+  .typing { display: flex; gap: 5px; padding: 12px 16px; }
+  .typing span { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); animation: bounce 1.4s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-8px); } }
+
+  /* Input */
+  .input-area { padding: 16px 20px; border-top: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
+  .input-row { display: flex; gap: 10px; align-items: flex-end; }
+  .input-row textarea {
+    flex: 1; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text); font-family: var(--font);
+    font-size: 14px; padding: 12px 16px; resize: none; outline: none;
+    min-height: 44px; max-height: 140px; transition: border-color 0.2s; line-height: 1.5;
+  }
+  .input-row textarea:focus { border-color: var(--accent); }
+  .input-row textarea::placeholder { color: var(--text-muted); }
+  .send-btn {
+    width: 44px; height: 44px; border-radius: var(--radius);
+    background: var(--accent); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: opacity 0.2s, transform 0.1s;
+  }
+  .send-btn:hover { opacity: 0.9; }
+  .send-btn:active { transform: scale(0.95); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .send-btn svg { width: 20px; height: 20px; fill: #fff; }
+  .footer-hint { font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 8px; }
+  .footer-hint a { color: var(--text-muted); text-decoration: none; }
 
   /* Quick actions */
-  .quick-actions {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    padding: 0 20px 12px;
-  }
+  .quick-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 20px 12px; }
   .quick-btn {
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--text-muted);
-    font-size: 12px;
-    padding: 6px 14px;
-    cursor: pointer;
-    font-family: var(--font);
-    transition: all 0.2s;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 20px; color: var(--text-muted); font-size: 12px;
+    padding: 6px 14px; cursor: pointer; font-family: var(--font); transition: all 0.2s;
   }
   .quick-btn:hover { border-color: var(--accent); color: var(--text); }
 
@@ -336,136 +208,23 @@
 </div>
 
 <script>
-const messagesEl = document.getElementById('messages');
-const inputEl = document.getElementById('input');
-const sendBtn = document.getElementById('sendBtn');
-const statusDot = document.getElementById('statusDot');
-const statusText = document.getElementById('statusText');
-const quickActions = document.getElementById('quickActions');
+const $ = id => document.getElementById(id);
+const messagesEl = $('messages');
+const inputEl = $('input');
+const sendBtn = $('sendBtn');
+const statusDot = $('statusDot');
+const statusText = $('statusText');
+const quickActions = $('quickActions');
+const loginOverlay = $('loginOverlay');
+const tokenInput = $('tokenInput');
+const loginBtn = $('loginBtn');
+const loginError = $('loginError');
 
 const SESSION_ID = 'brain_web_' + Math.random().toString(36).slice(2, 10);
 let isLoading = false;
-
-// Auto-resize textarea
-inputEl.addEventListener('input', () => {
-  inputEl.style.height = 'auto';
-  inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
-});
-
-// Send on Enter (Shift+Enter for newline)
-inputEl.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-});
-
-sendBtn.addEventListener('click', sendMessage);
-
-// Quick actions
-quickActions.addEventListener('click', (e) => {
-  const btn = e.target.closest('.quick-btn');
-  if (btn && !isLoading) {
-    inputEl.value = btn.dataset.msg;
-    sendMessage();
-  }
-});
-
-function addMessage(text, type) {
-  const div = document.createElement('div');
-  div.className = `msg ${type}`;
-
-  if (type === 'brain') {
-    const label = document.createElement('div');
-    label.className = 'label';
-    label.textContent = 'BRAIN';
-    div.appendChild(label);
-
-    const content = document.createElement('div');
-    // Basic markdown: bold
-    content.innerHTML = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n/g, '<br>');
-    div.appendChild(content);
-  } else {
-    div.textContent = text;
-  }
-
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-  return div;
-}
-
-function showTyping() {
-  const div = document.createElement('div');
-  div.className = 'msg brain';
-  div.id = 'typing';
-  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-function hideTyping() {
-  const el = document.getElementById('typing');
-  if (el) el.remove();
-}
-
-async function sendMessage() {
-  const text = inputEl.value.trim();
-  if (!text || isLoading) return;
-
-  isLoading = true;
-  sendBtn.disabled = true;
-  inputEl.value = '';
-  inputEl.style.height = 'auto';
-
-  // Hide quick actions after first message
-  quickActions.style.display = 'none';
-
-  addMessage(text, 'user');
-  showTyping();
-
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, sessionId: SESSION_ID })
-    });
-
-    hideTyping();
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      addMessage('Errore: ' + (err.error || res.statusText), 'system');
-      setStatus(false);
-    } else {
-      const data = await res.json();
-      addMessage(data.output, 'brain');
-      setStatus(true);
-    }
-  } catch (err) {
-    hideTyping();
-    addMessage('Connessione persa: ' + err.message, 'system');
-    setStatus(false);
-  }
-
-  isLoading = false;
-  sendBtn.disabled = false;
-  inputEl.focus();
-}
-
-function setStatus(online) {
-  statusDot.className = 'status-dot' + (online ? '' : ' offline');
-  statusText.textContent = online ? 'Online' : 'Offline';
-}
-
-// Auth
-const loginOverlay = document.getElementById('loginOverlay');
-const tokenInput = document.getElementById('tokenInput');
-const loginBtn = document.getElementById('loginBtn');
-const loginError = document.getElementById('loginError');
 let authToken = localStorage.getItem('brain_token') || '';
 
+// --- Auth ---
 function checkAuth() {
   if (authToken) {
     loginOverlay.classList.add('hidden');
@@ -479,15 +238,15 @@ function checkAuth() {
 async function tryLogin() {
   const token = tokenInput.value.trim();
   if (!token) return;
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Verifica...';
   try {
-    const res = await fetch('/api/health', { headers: { 'x-auth-token': token } });
-    // Health doesn't require auth, so test with a real chat call
-    const chatRes = await fetch('/api/chat', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-      body: JSON.stringify({ message: 'ping', sessionId: 'auth_test' })
+      body: JSON.stringify({ message: 'ping', sessionId: 'auth_check' })
     });
-    if (chatRes.ok) {
+    if (res.ok) {
       authToken = token;
       localStorage.setItem('brain_token', token);
       loginOverlay.classList.add('hidden');
@@ -500,14 +259,49 @@ async function tryLogin() {
   } catch (e) {
     loginError.style.display = 'block';
   }
+  loginBtn.disabled = false;
+  loginBtn.textContent = 'Accedi';
 }
 
 loginBtn.addEventListener('click', tryLogin);
-tokenInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryLogin(); });
+tokenInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
 
-// Override fetch in sendMessage to include token
-const originalSendMessage = sendMessage;
-async function sendMessageWithAuth() {
+// --- UI helpers ---
+function addMessage(text, type) {
+  const div = document.createElement('div');
+  div.className = `msg ${type}`;
+  if (type === 'brain') {
+    const label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = 'BRAIN';
+    div.appendChild(label);
+    const content = document.createElement('div');
+    content.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    div.appendChild(content);
+  } else {
+    div.textContent = text;
+  }
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return div;
+}
+
+function showTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg brain'; div.id = 'typing';
+  div.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+function hideTyping() { const el = $('typing'); if (el) el.remove(); }
+
+function setStatus(online) {
+  statusDot.className = 'status-dot' + (online ? '' : ' offline');
+  statusText.textContent = online ? 'Online' : 'Offline';
+}
+
+// --- Chat ---
+async function sendMessage() {
   const text = inputEl.value.trim();
   if (!text || isLoading) return;
 
@@ -526,7 +320,6 @@ async function sendMessageWithAuth() {
       headers: { 'Content-Type': 'application/json', 'x-auth-token': authToken },
       body: JSON.stringify({ message: text, sessionId: SESSION_ID })
     });
-
     hideTyping();
 
     if (res.status === 401) {
@@ -554,28 +347,24 @@ async function sendMessageWithAuth() {
   inputEl.focus();
 }
 
-// Replace handlers
-sendBtn.removeEventListener('click', sendMessage);
-sendBtn.addEventListener('click', sendMessageWithAuth);
-inputEl.removeEventListener('keydown', inputEl._keyHandler);
-inputEl.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessageWithAuth();
-  }
+// --- Auto-resize ---
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
 });
-quickActions.removeEventListener('click', quickActions._clickHandler);
-quickActions.addEventListener('click', (e) => {
+
+// --- Event listeners ---
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+sendBtn.addEventListener('click', sendMessage);
+quickActions.addEventListener('click', e => {
   const btn = e.target.closest('.quick-btn');
-  if (btn && !isLoading) {
-    inputEl.value = btn.dataset.msg;
-    sendMessageWithAuth();
-  }
+  if (btn && !isLoading) { inputEl.value = btn.dataset.msg; sendMessage(); }
 });
 
-// Health check on load
+// --- Init ---
 fetch('/api/health').then(r => r.ok ? setStatus(true) : setStatus(false)).catch(() => setStatus(false));
-
 checkAuth();
 </script>
 </body>
